@@ -6,64 +6,60 @@
 %%%-------------------------------------------------------------------
 -module(tt_sup).
 
+
 -behaviour(supervisor).
 
-%% API
--export([start_link/0]).
+%% External exports
+-export([start_link/0, upgrade/0]).
 
-%% Supervisor callbacks
+%% supervisor callbacks
 -export([init/1]).
 
--define(SERVER, ?MODULE).
-
-%%%===================================================================
-%%% API functions
-%%%===================================================================
-
-%%--------------------------------------------------------------------
-%% @doc
-%% Starts the supervisor
-%%
-%% @spec start_link() -> {ok, Pid} | ignore | {error, Error}
-%% @end
-%%--------------------------------------------------------------------
+%% @spec start_link() -> ServerRet
+%% @doc API for starting the supervisor.
 start_link() ->
-    supervisor:start_link({local, ?SERVER}, ?MODULE, []).
+    supervisor:start_link({local, ?MODULE}, ?MODULE, []).
 
-%%%===================================================================
-%%% Supervisor callbacks
-%%%===================================================================
+%% @spec upgrade() -> ok
+%% @doc Add processes if necessary.
+upgrade() ->
+    {ok, {_, Specs}} = init([]),
 
-%%--------------------------------------------------------------------
-%% @private
-%% @doc
-%% Whenever a supervisor is started using supervisor:start_link/[2,3],
-%% this function is called by the new process to find out about
-%% restart strategy, maximum restart frequency and child
-%% specifications.
-%%
-%% @spec init(Args) -> {ok, {SupFlags, [ChildSpec]}} |
-%%                     ignore |
-%%                     {error, Reason}
-%% @end
-%%--------------------------------------------------------------------
-server(Name, Type) ->
-    server(Name, Type, 2000).
+    Old = sets:from_list(
+	    [Name || {Name, _, _, _} <- supervisor:which_children(?MODULE)]),
+    New = sets:from_list([Name || {Name, _, _, _, _, _} <- Specs]),
+    Kill = sets:subtract(Old, New),
 
-server(Name, Type, Shutdown) ->
-    {Name, {Name, start_link, []}, permanent, Shutdown, Type, [Name]}.
+    sets:fold(fun (Id, ok) ->
+		      supervisor:terminate_child(?MODULE, Id),
+		      supervisor:delete_child(?MODULE, Id),
+		      ok
+	      end, ok, Kill),
 
-worker(Name) -> server(Name, worker).
+    [supervisor:start_child(?MODULE, Spec) || Spec <- Specs],
+    ok.
 
+%% @spec init([]) -> SupervisorTree
+%% @doc supervisor callback.
 init([]) ->
 
-%    Play = worker(play),
+    Ip = case os:getenv("WEBMACHINE_IP") of false -> "0.0.0.0"; Any -> Any end,
 
-    {ok,{{one_for_one ,0,1},
-         [%Play
-         ]}}.
+    {ok, Dispatch} = file:consult(filename:join([tt_app:get_base_dir(), 
+                                                 "priv", "dispatch.conf"])),
 
-%%%===================================================================
-%%% Internal functions
-%%%===================================================================
+    WebConfig = [
+		 {ip, Ip},
+		 {port, tt_app:get_env(port, 8000)},
+                 {log_dir, tt_app:get_env(log_dir, "priv/log")},
+		 {dispatch, Dispatch}],
+
+    Web = {webmachine_mochiweb,
+	   {webmachine_mochiweb, start, [WebConfig]},
+	   permanent, 5000, worker, dynamic},
+
+    Processes = [Web],
+
+    {ok, {{one_for_one, 10, 10}, Processes}}.
+
 
