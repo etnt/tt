@@ -3,23 +3,20 @@
   {description,  "tt - bla bla..."},
 
   % The Module and Args used to start this application.
-  {mod, {tt,_app, []},
+  {mod, {tt_app, []}},
 
   % All modules used by the application.
   {modules,
-   [tt,
+   [tt
     ,tt_app
     ,tt_sup
+    ,tt_resource
+    ,tt_file_resource
    ]},
 
   % configuration parameters similar to those in the config file specified on the command line
-  {env, [
-         {platform, inets}, %% {inets|mochiweb|yaws}
-         {port, 8282},
-         {hooks_module, tt},
-         {session_timeout, 20},
-         {sign_key, "ferj83heu22"},
-         {www_root, "./wwwroot"}
+  {env, [{port, 8282}
+	 ,{log_dir, "priv/log"}
 	]}
  ]
 }.

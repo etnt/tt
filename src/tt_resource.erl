@@ -23,18 +23,18 @@ index() ->
     <meta http-equiv=\"Content-Type\" content=\"text/html;charset=iso-8859-1\" />
 
     <!-- Javascript -->
-    <script src='/js/jquery-1.4.2.min.js' type='text/javascript' charset='utf-8'></script>
-    <script src='/js/pure-packed.js' type='text/javascript' charset='utf-8'></script>
-    <script src='/js/tt.js' type='text/javascript' charset='iso-8859-1'></script>
+    <script src='/assets/js/jquery-1.4.2.min.js' type='text/javascript' charset='utf-8'></script>
+    <script src='/assets/js/pure_packed.js' type='text/javascript' charset='utf-8'></script>
+    <script src='/assets/js/tt.js' type='text/javascript' charset='iso-8859-1'></script>
 
 
     <!-- CSS -->
-    <link rel=\"stylesheet\" href=\"/css/blueprint/screen.css\" type=\"text/css\" media=\"screen, projection\" />
-    <link rel=\"stylesheet\" href=\"/css/blueprint/print.css\" type=\"text/css\" media=\"print\" />    
-    <!--[if IE]><link rel=\"stylesheet\" href=\"/css/blueprint/ie.css\" type=\"text/css\" media=\"screen, projection\"><![endif]-->
-    <link rel=\"stylesheet\" href=\"/css/tt.css\" type=\"text/css\" media=\"screen, projection\" />
+    <link rel=\"stylesheet\" href=\"/assets/css/blueprint/screen.css\" type=\"text/css\" media=\"screen, projection\" />
+    <link rel=\"stylesheet\" href=\"/assets/css/blueprint/print.css\" type=\"text/css\" media=\"print\" />    
+    <!--[if IE]><link rel=\"stylesheet\" href=\"/assets/css/blueprint/ie.css\" type=\"text/css\" media=\"screen, projection\"><![endif]-->
+    <link rel=\"stylesheet\" href=\"/assets/css/tt.css\" type=\"text/css\" media=\"screen, projection\" />
 
-    <link rel='shortcut icon' href='/images/favicon.ico' />
+    <link rel='shortcut icon' href='/assets/images/favicon.ico' />
   </head>
   <body>
     <div id=\"main\">
