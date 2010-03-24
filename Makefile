@@ -6,6 +6,7 @@ compile:
 init: compile
 	cp src/tt.app.src ebin/tt.app 
 	(cd priv/docroot; mkdir js; cd js; ln -s ../../../dep/pure/libs/pure_packed.js .)
+	(cd dep/webmachine; make)
 
 clean:
 	rm -rf ./ebin/*.beam
