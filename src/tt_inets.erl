@@ -62,7 +62,8 @@ dodo(Info) ->
                     io:format("~p(~p): uri = ~p~n", [?MODULE,?LINE,Info#mod.request_uri]),
                     {proceed, [{response,{200,test_page()}}]};
                 _X ->
-            io:format("~p(~p): response = ~p~n", [?MODULE,?LINE,_X]),
+                    io:format("~p(~p): 404: ~p~n",
+                              [?MODULE,?LINE,{_X,_PhraseArgs,_Reason}]),
                     {proceed, Info#mod.data}
             end;
 	%% A response has been generated or sent!
