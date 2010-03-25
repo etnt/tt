@@ -37,8 +37,19 @@ index() ->
     <link rel='shortcut icon' href='/assets/images/favicon.ico' />
   </head>
   <body>
+   <div id=\"container\">
+
+    <div id=\"nav\">
+      <a href=\"/web/person\" class=\"nav_link\">Ranking</a>
+      <span class=\"nav_sep\">|</span>
+      <a href=\"/web/policy\" class=\"nav_link\">Register</a>
+      <span class=\"nav_sep\">|</span>
+      <a href=\"/web/policy_visualisation\" class=\"link\">Scores</a>
+    </div>
+    <hr size=\"1\" class=\"hr\" />
+
     <div id=\"main\">
-      <h1>Scoring</h1>
+      <h1 id=\"header\"></h1>
 
       <!-- HTML templates -->
       <table id=\"scoreboard\" class=\"template\">
@@ -53,6 +64,7 @@ index() ->
       </table>
 
     </div>
+   </div>
   </body>
 </html>
 ">>.

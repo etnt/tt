@@ -29,17 +29,21 @@ content_types_provided(ReqData, Context) ->
      ], ReqData, Context}.
 
 return_data(ReqData, Context) ->
-    ?dbg("content_types_provided~n",[]),
-    {data(), ReqData, Context}.
+    ?dbg("content_types_provided , what=~p~n",[catch wrq:path_info(what,ReqData)]),
+    {data(catch wrq:path_info(what,ReqData)), ReqData, Context}.
 
-data() ->
-    <<"var data = {
-  animals:[
-    {name:'tobbe', score:'100'},
-    {name:'peter', score:'-10'}
-    ]
-};
-">>.
+data("scores") ->
+    D = {obj,[{scores, [{obj,X} || X <- get_scores()]}]},
+    E = rfc4627:encode({obj,[{data,D},
+                             {header,'Ranking'}]}),
+    ?dbg("data: ~p~n",[E]),
+    E.
+
+%% Test data    
+get_scores() ->
+    [[{name,tobbe},{score,200}],
+     [{name,peter},{score,13}]].
+     
 
 set_content_type(ReqData) ->
     set_content_type(ReqData, "text/javascript").
