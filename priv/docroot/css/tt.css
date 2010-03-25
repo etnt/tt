@@ -1,0 +1,19 @@
+table {
+    border-collapse: collapse;
+    border-spacing: 0px;
+}
+
+th span.name,th span.score {padding-right: 10px;}
+td span.name,td span.score {padding-right: 10px;}
+
+.even {background-color:yellow;}
+.odd {background-color:white;}
+
+
+#main {margin: 10px 0 0 50px;}
+
+#scoreboard {
+    display:none;
+    margin: 1em 0 0 1em;
+}
+

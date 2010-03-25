@@ -19,7 +19,7 @@
 -define(dbg(S,A), io:format("~p(~p): "++S,[?MODULE,?LINE|A])).
 %%-define(dbg(S,A), true).
 
-init([Prefix]) -> {ok, orddict:from_list([{prefix,Prefix}])}.
+init(Context) -> {ok, Context}.
 
 resource_exists(ReqData, State) -> {true, ReqData, State}. % FIXME
 

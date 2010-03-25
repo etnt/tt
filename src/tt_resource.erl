@@ -40,10 +40,15 @@ index() ->
     <div id=\"main\">
       <h1>Scoring</h1>
 
-      <!-- HTML template -->
-      <table id=\"scoring\">
+      <!-- HTML templates -->
+      <table id=\"scoreboard\" class=\"template\">
 	<tr>
-	  <td></td>
+	  <th><span class=\"name\">Name</span></td>
+	  <th><span class=\"score\">Score</span></td>
+	</tr>
+	<tr class=\"scoredata\">
+	  <td><span class=\"name\"></span></td>
+	  <td><span class=\"score\"></span></td>
 	</tr>
       </table>
 
