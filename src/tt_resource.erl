@@ -40,11 +40,13 @@ index() ->
    <div id=\"container\">
 
     <div id=\"nav\">
-      <a href=\"/web/person\" class=\"nav_link\">Ranking</a>
+      <a href=\"#\" id=\"nranking\" class=\"nav_link\">Ranking</a>
       <span class=\"nav_sep\">|</span>
-      <a href=\"/web/policy\" class=\"nav_link\">Register</a>
+      <a href=\"#\" id=\"nregister\" class=\"nav_link\">Register</a>
       <span class=\"nav_sep\">|</span>
-      <a href=\"/web/policy_visualisation\" class=\"link\">Scores</a>
+      <a href=\"#\" id=\"nscores\" class=\"nav_link\">Scores</a>
+      <span class=\"nav_sep\">|</span>
+      <a href=\"#\" id=\"nabout\" class=\"nav_link\">About</a>
     </div>
     <hr size=\"1\" class=\"hr\" />
 
@@ -52,15 +54,17 @@ index() ->
       <h1 id=\"header\"></h1>
 
       <!-- HTML templates -->
-      <table id=\"scoreboard\" class=\"template\">
+      <table id=\"ranking\" class=\"template\">
 	<tr>
 	  <th><span class=\"name\">Name</span></td>
 	  <th><span class=\"score\">Score</span></td>
 	</tr>
-	<tr class=\"scoredata\">
-	  <td><span class=\"name\"></span></td>
-	  <td><span class=\"score\"></span></td>
-	</tr>
+        <tbody id=\"scoredata\">
+   	  <tr class=\"scoreentry\">
+	    <td><span class=\"name\"></span></td>
+	    <td><span class=\"score\"></span></td>
+	  </tr>
+        </tbody>
       </table>
 
     </div>
