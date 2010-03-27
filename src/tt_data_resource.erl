@@ -30,22 +30,44 @@ content_types_provided(ReqData, Context) ->
 
 return_data(ReqData, Context) ->
     ?dbg("content_types_provided , what=~p~n",[catch wrq:path_info(what,ReqData)]),
-    {data(catch wrq:path_info(what,ReqData)), ReqData, Context}.
+    {data(ReqData), 
+     set_content_type(ReqData, "application/json"),
+     Context}.
 
-data("ranking") ->
+data(ReqData) ->
+    data(wrq:path_info(what,ReqData),ReqData).
+
+data("ranking", _ReqData) ->
     D = {obj,[{scores, [{obj,X} || X <- get_scores()]}]},
-    json_return_object('Ranking',D).
+    json_return_object(<<"Ranking">>,D);
+data("users", _ReqData) ->
+    D = {obj,[{users, [{obj,X} || X <- get_users()]}]},
+    json_return_object(<<"Register">>,D);
+data("register", ReqData) ->
+    ?dbg("register: ~p~n",
+         [ [wrq:get_qs_value(Key,ReqData) || Key <- ["winner","looser","figures"]]]),
+    D = {obj,[]},
+    json_return_object(<<"Register">>,D, <<"Registration succeeded!">>).
 
 %% Test data    
 get_scores() ->
-    [[{name,tobbe},{score,200}],
-     [{name,peter},{score,12}]].
+    {_,Y,X} = erlang:now(),
+    [[{name,tobbe},{score,X}],
+     [{name,peter},{score,Y}]].
+
+%% Test data    
+get_users() ->
+    [[{name,tobbe}]
+     ,[{name,peter}]
+     ,[{name,arne}]
+     ,[{name,gunnar}]
+    ].
 
 %%
 %% Json return object: {data:D, header:H, emsg:E}
 %%
 json_return_object(Header, Data) ->
-    json_return_object(Header, Data, "").
+    json_return_object(Header, Data, <<>>).
 
 json_return_object(Header, Data, Emsg) ->
     rfc4627:encode({obj,[{header,Header},

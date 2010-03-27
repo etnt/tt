@@ -50,23 +50,14 @@ index() ->
     </div>
     <hr size=\"1\" class=\"hr\" />
 
-    <div id=\"main\">
-      <h1 id=\"header\"></h1>
+    <div id=\"top\">
+      <span id=\"header\"></span><span id=\"emsg\"></span>
 
-      <!-- HTML templates -->
-      <table id=\"ranking\" class=\"template\">
-	<tr>
-	  <th><span class=\"name\">Name</span></td>
-	  <th><span class=\"score\">Score</span></td>
-	</tr>
-        <tbody id=\"scoredata\">
-   	  <tr class=\"scoreentry\">
-	    <td><span class=\"name\"></span></td>
-	    <td><span class=\"score\"></span></td>
-	  </tr>
-        </tbody>
-      </table>
+      <div id=\"main\">
 
+        <!-- HTML dynamically ends up here... -->
+
+      </div>
     </div>
    </div>
   </body>
