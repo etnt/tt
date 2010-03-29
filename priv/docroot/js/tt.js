@@ -13,6 +13,10 @@ function update_emsg (msg) {
     $('#emsg').text(msg);
 }
 
+/*
+ *  R A N K I N G   S C O R E   P A G E
+ */
+
 // Fill a table with ranking scores.
 function render_ranking (x) {
   var directive = {
@@ -52,6 +56,18 @@ function show_ranking () {
     render_ranking(x);
   });
 }
+
+// Show a ranking table of all players with their scores.
+function show_scores () {
+  $.getJSON("/data/ranking", {}, function (x) {
+    render_ranking(x);
+  });
+}
+
+
+/*
+ *  R E G I S T E R   S C O R E   P A G E
+ */
 
 // Register the score data
 function register_score (args) {
@@ -116,8 +132,8 @@ function render_register (x) {
     update_header(x.header);
     update_emsg(x.emsg);
 
-    // Setup the Submit button to do some simple
-    // sanity checks of the figures and then submit the data!
+    // Setup the Submit button to do some simple sanity
+    // checks of the figures and then submit the data!
     $('#regform').submit(function () {
       var figures = $('#figures').val();
       if (figures.length > 0) {
@@ -143,18 +159,23 @@ function show_register () {
 }
 
 
-// Show a scoreboard with all players.
-function show_scores () {
-  $.getJSON("/data/ranking", {}, function (x) {
-    render_ranking(x);
-  });
-}
+/*
+ *  A B O U T  P A G E
+ */
 
 function show_about () {
   $.getJSON("/data/about", {}, function (x) {
-
+    var about = '<p>This a Table Tennis Score system. Bla bla...';
+    update_header('About');
+    update_emsg('');
+    $('#main').html(about);
   });
 }
+
+
+/*
+ *  I N I T A L I S A T I O N   A T   P A G E   L O A D
+ */
 
 // Setup the actions of the navigation bar.
 function setup_navbar () {
