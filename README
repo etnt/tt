@@ -23,3 +23,5 @@ function(doc) {
     emit(doc.gsec, {winner:doc.winner, looser:doc.looser, figures:doc.figures, gsec:doc.gsec});
 }
 
+
+
