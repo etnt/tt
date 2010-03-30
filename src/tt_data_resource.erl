@@ -38,7 +38,8 @@ data(ReqData) ->
     data(wrq:path_info(what,ReqData),ReqData).
 
 data("ranking", _ReqData) ->
-    D = {obj,[{scores, [{obj,X} || X <- get_scores()]}]},
+%    D = {obj,[{scores, [{obj,X} || X <- get_scores()]}]},
+    D = {obj,[{scores, tt_couchdb:scores()}]},
     json_return_object(<<"Ranking">>,D);
 data("users", _ReqData) ->
     D = {obj,[{users, [{obj,X} || X <- get_users()]}]},
@@ -46,8 +47,26 @@ data("users", _ReqData) ->
 data("register", ReqData) ->
     ?dbg("register: ~p~n",
          [ [wrq:get_qs_value(Key,ReqData) || Key <- ["winner","looser","figures"]]]),
-    D = {obj,[]},
-    json_return_object(<<"Register">>,D, <<"Registration succeeded!">>).
+    register_scores(ReqData).
+
+register_scores(ReqData) ->
+    Emsg = case validate_figures(wrq:get_qs_value("figures",ReqData)) of
+               ok -> 
+                   store_scores(ReqData),
+                   <<"Registration succeeded!">>;
+
+               {error, Msg} when is_binary(Msg) -> 
+                   Msg
+           end,
+    json_return_object(<<"Register">>, {obj,[]}, Emsg).
+
+validate_figures(_) ->
+    ok.
+
+store_scores(ReqDat) ->
+    tbd.
+
+
 
 %% Test data    
 get_scores() ->

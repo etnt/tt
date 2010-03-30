@@ -22,7 +22,7 @@ function render_ranking (x) {
   var directive = {
     'tr.scoreentry' : {
       's<-scores' : {
-	'span.name'  : 's.name',
+	'span.name'  : 's.nick',
         'span.score' : 's.score'
       }
     }

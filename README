@@ -1,2 +1,25 @@
-Hello...
-World
+
+CouchDB objects
+===============
+
+scores: nick x scores
+
+matches: winner x looser x figures x gsec
+
+CouchDB views:
+==============
+
+tt/scores:
+----------
+function(doc) {morgon
+  if (doc.type == "score")
+    emit(doc.score, {nick:doc.nick, score:doc.score});
+}
+
+tt/matches:
+-----------
+function(doc) {
+  if (doc.type == "match")
+    emit(doc.gsec, {winner:doc.winner, looser:doc.looser, figures:doc.figures, gsec:doc.gsec});
+}
+
