@@ -63,8 +63,10 @@ register_scores(ReqData) ->
 validate_figures(_) ->
     ok.
 
-store_scores(ReqDat) ->
-    tbd.
+store_scores(ReqData) ->
+    L = [{Key,list_to_binary(wrq:get_qs_value(Key,ReqData))} 
+         || Key <- ["winner","looser","figures"]],
+    tt_couchdb:store_doc([{"type",<<"match">>}|L]).
 
 
 

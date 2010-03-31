@@ -9,6 +9,8 @@
 
 -export([scores/0
          ,matches/0
+         ,store_doc/1
+         ,store_doc/2
         ]).
 
 -export([http_get_req/1
@@ -20,16 +22,35 @@
         ]).
 
 
+%%
+%% @doc Take a key-value tuple list and store it as a new CouchDB document.
+%%
+store_doc(KeyValList) ->
+    store_doc(KeyValList, tt:gnow()).
+
+store_doc(KeyValList, Created) ->
+    Z = [{"gsec", Created},
+         {"created_tz", list_to_binary(lists:flatten(tt:rfc3339(Created)))}
+         | KeyValList],
+    Body =  rfc4627:encode({obj, Z}),
+    http_post_req("http://localhost:5984"++"/tt", Body).
+
+%%
+%% @doc Get the scores from CouchDB
+%%
 scores() ->
-    call_couchdb("http://localhost:5984",
-                 "/tt/_design/tt/_view/scores").
+    get_from_couchdb("http://localhost:5984",
+                     "/tt/_design/tt/_view/scores").
 
+%%
+%% @doc Get the matches from CouchDB
+%%
 matches() ->
-    call_couchdb("http://localhost:5984",
-                 "/tt/_design/tt/_view/matches").
+    get_from_couchdb("http://localhost:5984",
+                     "/tt/_design/tt/_view/matches").
 
 
-call_couchdb(Url, Path) ->
+get_from_couchdb(Url, Path) ->
     R = http_get_req(Url++Path),
     %% Just preserve the Json
     F = fun(X) -> {true,X} end,
