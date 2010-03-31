@@ -21,7 +21,9 @@
 %% @spec start(_Type, _StartArgs) -> ServerRet
 %% @doc application start callback for tt.
 start(_, _) -> 
+    application:start(inets),
     application:start(crypto),
+    application:start(webmachine),
     tt_sup:start_link().
 
 %% @spec stop(_State) -> ServerRet

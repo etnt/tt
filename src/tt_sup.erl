@@ -43,23 +43,21 @@ upgrade() ->
 %% @doc supervisor callback.
 init([]) ->
 
-    Ip = case os:getenv("WEBMACHINE_IP") of false -> "0.0.0.0"; Any -> Any end,
-
     {ok, Dispatch} = file:consult(filename:join([tt_app:get_base_dir(), 
                                                  "priv", "dispatch.conf"])),
 
-    WebConfig = [
-		 {ip, Ip},
-		 {port, tt_app:get_env(port, 8000)},
-                 {log_dir, tt_app:get_env(log_dir, "priv/log")},
-		 {dispatch, Dispatch}],
+    Options = [{log_dir, tt_app:get_env(log_dir, "priv/log")},
+               {enable_webmachine_logger, true},
+               {enable_perf_logger, true},
+               {dispatch, Dispatch}],
 
-    Web = {webmachine_mochiweb,
-	   {webmachine_mochiweb, start, [WebConfig]},
-	   permanent, 5000, worker, dynamic},
+    webmachine_mochiweb:init(Options),
 
-    Processes = [Web],
+    MochiOptions = [],
+    Wspecs = [webmachine_mochiweb:worker_childspec(WebConfig) || 
+                 WebConfig <- webmachine_mochiweb:setup_the_mochiweb_options(MochiOptions, 
+                                                                             Dispatch)],
 
-    {ok, {{one_for_one, 10, 10}, Processes}}.
+    {ok, {{one_for_one, 10, 10}, Wspecs}}.
 
 
