@@ -3,10 +3,12 @@ include dep.inc
 compile: 
 	(erl -make)
 
-init: compile
-	cp src/tt.app.src ebin/tt.app 
-	(cd priv/docroot; mkdir js; cd js; ln -s ../../../dep/pure/libs/pure_packed.js .)
-	(cd dep/webmachine; make)
+init: 
+	(mkdir ebin; cp src/tt.app.src ebin/tt.app)
+	(mkdir dep; cd dep)
+	hg clone http://bitbucket.org/etnt/pure/
+	hg clone http://bitbucket.org/etnt/webmachine/
+	(cd webmachine; make)
 
 clean:
 	rm -rf ./ebin/*.beam
