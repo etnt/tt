@@ -52,6 +52,7 @@ init([]) ->
                {dispatch, Dispatch}],
 
     webmachine_mochiweb:init(Options),
+    tt_couchdb:init(),
 
     MochiOptions = [],
     Wspecs = [webmachine_mochiweb:worker_childspec(WebConfig) || 

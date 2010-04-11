@@ -7,7 +7,8 @@
 %%%-------------------------------------------------------------------
 -module(tt_couchdb).
 
--export([scores/0
+-export([init/0,
+	 scores/0
          ,matches/0
          ,store_doc/1
          ,store_doc/2
@@ -22,6 +23,56 @@
         ]).
 
 
+-define(DB_NAME, "tt").
+-define(HOST, "http://localhost:5984/").
+-define(DESIGN_DOC, "_design/tt").
+-define(SCORES_VIEW, "scores").
+-define(MATCHES_VIEW, "matches").
+-define(VIEWS_PATH, ?HOST ++ ?DB_NAME ++ "/" ++ ?DESIGN_DOC ++ "/_view/").
+-define(DESIGN_PATH, ?HOST ++ ?DB_NAME ++ "/" ++ ?DESIGN_DOC).
+
+
+%% @doc Create the tt database if it doesn't exist. Also create the views
+%% if they don't exist
+init() ->
+    DbList = http_get_req(?HOST ++ "_all_dbs"),
+    case lists:member(list_to_binary(?DB_NAME), DbList) of
+	true ->
+	    ok;
+	false ->
+	    http_put_req(?HOST ++ ?DB_NAME, [])
+    end,
+    init_design_doc(),
+    ok.
+
+%% @doc Create the tt design document if it doesn't exist
+init_design_doc() ->
+    try
+	http_get_req(?DESIGN_PATH)
+    catch
+	throw:_ ->
+	    Z = [{"_id", list_to_binary(?DESIGN_DOC)},
+		 {"views", {obj, views()}}],
+	    Body = rfc4627:encode({obj, Z}),
+	    http_put_req(?DESIGN_PATH, Body)
+    end.
+
+views() ->
+    [{?SCORES_VIEW, {obj, [{"map", list_to_binary(scores_map())}]}},
+     {?MATCHES_VIEW, {obj, [{"map", list_to_binary(matches_map())}]}}].
+
+scores_map() ->
+    "function(doc) {"
+	"if(doc.type == 'score')"
+	"emit(doc.score, {nick:doc.nick, score:doc.score); }".
+
+matches_map() ->
+    "function(doc) {"
+	"if(doc.type == 'match')"
+	"emit(doc.gsec, {winner:doc.winner, loose:doc.looser,"
+	"figures:doc.figures, gsec:doc.gsec); }".
+
+
 %%
 %% @doc Take a key-value tuple list and store it as a new CouchDB document.
 %%
@@ -33,25 +84,23 @@ store_doc(KeyValList, Created) ->
          {"created_tz", list_to_binary(lists:flatten(tt:rfc3339(Created)))}
          | KeyValList],
     Body =  rfc4627:encode({obj, Z}),
-    http_post_req("http://localhost:5984"++"/tt", Body).
+    http_post_req(?HOST ++ ?DB_NAME, Body).
 
 %%
 %% @doc Get the scores from CouchDB
 %%
 scores() ->
-    get_from_couchdb("http://localhost:5984",
-                     "/tt/_design/tt/_view/scores").
+    get_from_couchdb(?VIEWS_PATH ++ ?SCORES_VIEW).
 
 %%
 %% @doc Get the matches from CouchDB
 %%
 matches() ->
-    get_from_couchdb("http://localhost:5984",
-                     "/tt/_design/tt/_view/matches").
+    get_from_couchdb(?VIEWS_PATH ++ ?MATCHES_VIEW).
 
 
-get_from_couchdb(Url, Path) ->
-    R = http_get_req(Url++Path),
+get_from_couchdb(Url) ->
+    R = http_get_req(Url),
     %% Just preserve the Json
     F = fun(X) -> {true,X} end,
     find(F, ["rows","value"], R).
