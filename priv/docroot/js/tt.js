@@ -164,12 +164,11 @@ function show_register () {
  */
 
 function show_about () {
-  $.getJSON("/data/about", {}, function (x) {
-    var about = '<p>This a Table Tennis Score system. Bla bla...';
+    var about = '<p>This a Table Tennis Score system to keep track of '
+		  + 'the amazing games that are played every day at Klarna!</p>';
     update_header('About');
     update_emsg('');
     $('#main').html(about);
-  });
 }
 
 
