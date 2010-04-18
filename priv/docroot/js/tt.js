@@ -66,20 +66,20 @@ function show_scores () {
 
 
 /*
- *  R E G I S T E R   S C O R E   P A G E
+ *  M A T C H   P A G E
  */
 
 // Register the score data
 function register_score (args) {
-  $.getJSON("/data/register?"+args, {}, function (x) {
+  $.getJSON("/data/match?"+args, {}, function (x) {
     update_header(x.header);
     update_emsg(x.emsg);
   });
 }
 
 
-// Display a score registration form.
-function render_register (x) {
+// Display a match form.
+function render_match (x) {
   var directive = {
     'option.users' : {
       'u<-users' : {
@@ -152,10 +152,60 @@ function render_register (x) {
     $('#regform').show();
 }
 
-function show_register () {
+function show_match () {
   $.getJSON("/data/users", {}, function (x) {
-    render_register(x);
+    render_match(x);
   });
+}
+
+
+/*
+ *  S I G N   U P   P A G E
+ */
+
+// Sign up the new user
+function sign_up (args) {
+  $.ajax({
+	   url: "users",
+	   type: "POST",
+	   data: args,
+	   success: function () {
+	     alert("Your nick has been successfuly registered.");
+	   },
+	   error: function () {
+	     alert("Nick already used. Please try a new one.");
+	     }});
+}
+
+function show_signup() {
+  var form =
+    '<form id="signform">\
+      <div>\
+	<label for="nick">Nick:</label>\
+	<input type="text" id="nick" name="nick" />\
+      </div>\
+      <div class="submit">\
+        <input type="submit" name="g" value="Submit" id="g" />\
+      </div>\
+    </form>';
+  $('#main').html(form);
+  update_header('Sign up');
+
+  // Setup the Submit button to do some simple sanity
+  // checks the nick and then submit the data!
+  $('#signform').submit(function () {
+    var nick = $('#nick').val();
+    if (nick.length > 0) {
+      if (/^[a-zA-Z]+[a-zA-Z0-9]*$/.test(nick))
+	sign_up($('#signform').serialize());
+      else alert("'Nick' has wrong format!");
+    }
+    else alert("'Nick' has wrong format!");
+    return false;
+  });
+
+  // Show the form
+  $('#signform').show();
 }
 
 
@@ -179,8 +229,9 @@ function show_about () {
 // Setup the actions of the navigation bar.
 function setup_navbar () {
   $("#nranking").click(function() {show_ranking()});
-  $("#nregister").click(function() {show_register()});
+  $("#nmatch").click(function() {show_match()});
   $("#nscores").click(function() {show_scores()});
+  $("#nsign").click(function() {show_signup()});
   $("#nabout").click(function() {show_about()});
 }
 

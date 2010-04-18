@@ -42,9 +42,11 @@ index() ->
     <div id=\"nav\">
       <a href=\"#\" id=\"nranking\" class=\"nav_link\">Ranking</a>
       <span class=\"nav_sep\">|</span>
-      <a href=\"#\" id=\"nregister\" class=\"nav_link\">Register</a>
+      <a href=\"#\" id=\"nmatch\" class=\"nav_link\">Match</a>
       <span class=\"nav_sep\">|</span>
       <a href=\"#\" id=\"nscores\" class=\"nav_link\">Scores</a>
+      <span class=\"nav_sep\">|</span>
+      <a href=\"#\" id=\"nsign\" class=\"nav_link\">Sign up</a>
       <span class=\"nav_sep\">|</span>
       <a href=\"#\" id=\"nabout\" class=\"nav_link\">About</a>
     </div>

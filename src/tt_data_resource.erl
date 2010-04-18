@@ -10,7 +10,6 @@
          ,resource_exists/2
          ,content_types_provided/2
          ,return_data/2
-         ,set_content_type/1
         ]).
 
 -include_lib("webmachine/include/webmachine.hrl").
@@ -29,9 +28,8 @@ content_types_provided(ReqData, Context) ->
      ], ReqData, Context}.
 
 return_data(ReqData, Context) ->
-    ?dbg("content_types_provided , what=~p~n",[catch wrq:path_info(what,ReqData)]),
     {data(ReqData), 
-     set_content_type(ReqData, "application/json"),
+     tt_utils:set_content_type(ReqData, "application/json"),
      Context}.
 
 data(ReqData) ->
@@ -40,12 +38,12 @@ data(ReqData) ->
 data("ranking", _ReqData) ->
 %    D = {obj,[{scores, [{obj,X} || X <- get_scores()]}]},
     D = {obj,[{scores, tt_couchdb:scores()}]},
-    json_return_object(<<"Ranking">>,D);
+    tt_utils:json_return_object(<<"Ranking">>,D);
 data("users", _ReqData) ->
     D = {obj,[{users, [{obj,X} || X <- get_users()]}]},
-    json_return_object(<<"Register">>,D);
-data("register", ReqData) ->
-    ?dbg("register: ~p~n",
+    tt_utils:json_return_object(<<"Register">>,D);
+data("match", ReqData) ->
+    ?dbg("match: ~p~n",
          [ [wrq:get_qs_value(Key,ReqData) || Key <- ["winner","looser","figures"]]]),
     register_scores(ReqData).
 
@@ -58,7 +56,7 @@ register_scores(ReqData) ->
                {error, Msg} when is_binary(Msg) -> 
                    Msg
            end,
-    json_return_object(<<"Register">>, {obj,[]}, Emsg).
+    tt_utils:json_return_object(<<"Register">>, {obj,[]}, Emsg).
 
 validate_figures(_) ->
     ok.
@@ -83,22 +81,3 @@ get_users() ->
      ,[{name,arne}]
      ,[{name,gunnar}]
     ].
-
-%%
-%% Json return object: {data:D, header:H, emsg:E}
-%%
-json_return_object(Header, Data) ->
-    json_return_object(Header, Data, <<>>).
-
-json_return_object(Header, Data, Emsg) ->
-    rfc4627:encode({obj,[{header,Header},
-                         {data,  Data},
-                         {emsg,  Emsg}]}).
-     
-
-set_content_type(ReqData) ->
-    set_content_type(ReqData, "text/javascript").
-        
-set_content_type(ReqData, ContentType) ->
-    ?dbg("ContentType: ~p~n",[ContentType]),
-    wrq:set_resp_headers([{"content-type",ContentType}], ReqData).

@@ -10,6 +10,8 @@
 -export([init/0,
 	 scores/0
          ,matches/0
+	 ,users/0
+	 ,get_user/1
          ,store_doc/1
          ,store_doc/2
         ]).
@@ -28,6 +30,7 @@
 -define(DESIGN_DOC, "_design/tt").
 -define(SCORES_VIEW, "scores").
 -define(MATCHES_VIEW, "matches").
+-define(USERS_VIEW, "users").
 -define(VIEWS_PATH, ?HOST ++ ?DB_NAME ++ "/" ++ ?DESIGN_DOC ++ "/_view/").
 -define(DESIGN_PATH, ?HOST ++ ?DB_NAME ++ "/" ++ ?DESIGN_DOC).
 
@@ -59,18 +62,24 @@ init_design_doc() ->
 
 views() ->
     [{?SCORES_VIEW, {obj, [{"map", list_to_binary(scores_map())}]}},
-     {?MATCHES_VIEW, {obj, [{"map", list_to_binary(matches_map())}]}}].
+     {?MATCHES_VIEW, {obj, [{"map", list_to_binary(matches_map())}]}},
+     {?USERS_VIEW, {obj, [{"map", list_to_binary(users_map())}]}}].
 
 scores_map() ->
     "function(doc) {"
 	"if(doc.type == 'score')"
-	"emit(doc.score, {nick:doc.nick, score:doc.score); }".
+	"emit(doc.score, {nick:doc.nick, score:doc.score}); }".
 
 matches_map() ->
     "function(doc) {"
 	"if(doc.type == 'match')"
 	"emit(doc.gsec, {winner:doc.winner, loose:doc.looser,"
-	"figures:doc.figures, gsec:doc.gsec); }".
+	"figures:doc.figures, gsec:doc.gsec}); }".
+
+users_map() ->
+    "function(doc) {"
+	"if(doc.type == 'user')"
+	"emit(doc.nick, {score:doc.score});}".
 
 
 %%
@@ -98,6 +107,17 @@ scores() ->
 matches() ->
     get_from_couchdb(?VIEWS_PATH ++ ?MATCHES_VIEW).
 
+%%
+%% @doc Get the users from CouchDB
+%%
+users() ->
+    get_from_couchdb(?VIEWS_PATH ++ ?USERS_VIEW).
+
+%%
+%% @doc Get user data
+%%
+get_user(Nick) ->
+    get_from_couchdb(?VIEWS_PATH ++ ?USERS_VIEW ++ "?key=%22" ++ Nick ++ "%22").
 
 get_from_couchdb(Url) ->
     R = http_get_req(Url),

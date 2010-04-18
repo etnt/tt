@@ -38,8 +38,10 @@
 }
 
 #regform {display:none;}
-
 form#regform div {margin-top: 1.5em;}
+
+#signform {display:none;}
+form#signform div {margin-top: 1.5em;}
 
 .mdash {
     padding: 0 1em; 
