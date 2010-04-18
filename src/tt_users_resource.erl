@@ -41,15 +41,26 @@ content_types_provided(ReqData, Context) ->
       ,{"application/javascript", return_data}
      ], ReqData, Context}.
 
+return_data(ReqData, Context) ->
+    case wrq:disp_path(ReqData) of
+	"" ->
+	    Data = tt_utils:json_return_object(
+		     <<"">>, {obj, [{users, tt_couchdb:users()}]}),
+	    {Data, 
+	     tt_utils:set_content_type(ReqData, "application/json"), 
+	     Context};
+	_ ->
+	    io:format("asdf")
+    end.
+
+%%
+%% Functions that handle the creation of a new user
+%%
 content_types_accepted(ReqData, Context) ->
     CT = wrq:get_req_header("content-type", ReqData),
     {MT, _Params} = webmachine_util:media_type_to_detail(CT),
     {[{MT, create_user}], ReqData, Context}.
 
-return_data(ReqData, Context) ->
-    {soma, "application/json", Context}.
-
-%% POST request are used to create new resources, so this function returns true
 post_is_create(ReqData, Context) ->
     {true, ReqData, Context}.
 

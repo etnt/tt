@@ -21,7 +21,6 @@ init(Context) -> {ok, Context}.
 
 resource_exists(ReqData, State) -> {true, ReqData, State}. % FIXME
 
-
 content_types_provided(ReqData, Context) ->
     {[{"text/javascript",         return_data}
       ,{"application/javascript", return_data}
@@ -36,12 +35,8 @@ data(ReqData) ->
     data(wrq:path_info(what,ReqData),ReqData).
 
 data("ranking", _ReqData) ->
-%    D = {obj,[{scores, [{obj,X} || X <- get_scores()]}]},
     D = {obj,[{scores, tt_couchdb:scores()}]},
     tt_utils:json_return_object(<<"Ranking">>,D);
-data("users", _ReqData) ->
-    D = {obj,[{users, [{obj,X} || X <- get_users()]}]},
-    tt_utils:json_return_object(<<"Register">>,D);
 data("match", ReqData) ->
     ?dbg("match: ~p~n",
          [ [wrq:get_qs_value(Key,ReqData) || Key <- ["winner","looser","figures"]]]),
@@ -65,19 +60,3 @@ store_scores(ReqData) ->
     L = [{Key,list_to_binary(wrq:get_qs_value(Key,ReqData))} 
          || Key <- ["winner","looser","figures"]],
     tt_couchdb:store_doc([{"type",<<"match">>}|L]).
-
-
-
-%% Test data    
-get_scores() ->
-    {_,Y,X} = erlang:now(),
-    [[{name,tobbe},{score,X}],
-     [{name,peter},{score,Y}]].
-
-%% Test data    
-get_users() ->
-    [[{name,tobbe}]
-     ,[{name,peter}]
-     ,[{name,arne}]
-     ,[{name,gunnar}]
-    ].

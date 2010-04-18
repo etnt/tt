@@ -83,8 +83,8 @@ function render_match (x) {
   var directive = {
     'option.users' : {
       'u<-users' : {
-	'.' : 'u.name',
-	'@value' : 'u.name'
+	'.' : 'u.nick',
+	'@value' : 'u.nick'
 	  }
     }
   };
@@ -129,8 +129,7 @@ function render_match (x) {
     // Populate the template with the data
     $('#regform').render(x.data, directive);
     // Update other parts of the page
-    update_header(x.header);
-    update_emsg(x.emsg);
+    update_header('Add a match');
 
     // Setup the Submit button to do some simple sanity
     // checks of the figures and then submit the data!
@@ -153,8 +152,8 @@ function render_match (x) {
 }
 
 function show_match () {
-  $.getJSON("/data/users", {}, function (x) {
-    render_match(x);
+  $.getJSON("users", {}, function (x) {
+	      render_match(x);
   });
 }
 
@@ -189,7 +188,7 @@ function show_signup() {
       </div>\
     </form>';
   $('#main').html(form);
-  update_header('Sign up');
+  update_header('Create a new user');
 
   // Setup the Submit button to do some simple sanity
   // checks the nick and then submit the data!

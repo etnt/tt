@@ -79,7 +79,7 @@ matches_map() ->
 users_map() ->
     "function(doc) {"
 	"if(doc.type == 'user')"
-	"emit(doc.nick, {score:doc.score});}".
+	"emit(doc.score, {nick:doc.nick});}".
 
 
 %%
