@@ -35,7 +35,7 @@ data(ReqData) ->
     data(wrq:path_info(what,ReqData),ReqData).
 
 data("ranking", _ReqData) ->
-    D = {obj,[{scores, tt_couchdb:scores()}]},
+    D = {obj,[{ranking, tt_couchdb:users()}]},
     tt_utils:json_return_object(<<"Ranking">>,D);
 data("match", ReqData) ->
     ?dbg("match: ~p~n",

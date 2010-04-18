@@ -11,7 +11,6 @@
 	 scores/0
          ,matches/0
 	 ,users/0
-	 ,get_user/1
          ,store_doc/1
          ,store_doc/2
         ]).
@@ -79,7 +78,7 @@ matches_map() ->
 users_map() ->
     "function(doc) {"
 	"if(doc.type == 'user')"
-	"emit(doc.score, {nick:doc.nick});}".
+	"emit(doc.score, {nick:doc.nick, score:doc.score});}".
 
 
 %%
@@ -113,11 +112,7 @@ matches() ->
 users() ->
     get_from_couchdb(?VIEWS_PATH ++ ?USERS_VIEW).
 
-%%
-%% @doc Get user data
-%%
-get_user(Nick) ->
-    get_from_couchdb(?VIEWS_PATH ++ ?USERS_VIEW ++ "?key=%22" ++ Nick ++ "%22").
+    
 
 get_from_couchdb(Url) ->
     R = http_get_req(Url),

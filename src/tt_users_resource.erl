@@ -50,7 +50,7 @@ return_data(ReqData, Context) ->
 	     tt_utils:set_content_type(ReqData, "application/json"), 
 	     Context};
 	_ ->
-	    io:format("asdf")
+	    io:format("~p~n", [wrq:disp_path(ReqData)])
     end.
 
 %%
@@ -74,12 +74,22 @@ create_path(ReqData, Context) ->
 
 create_user(ReqData, Context) ->
     Nick = wrq:disp_path(ReqData),
-    case tt_couchdb:get_user(Nick) of
-        [] ->
+    Users = tt_couchdb:users(),
+    case nick_already_used(Nick, Users) of
+        false ->
 	    tt_couchdb:store_doc([{"type",<<"user">>},
 				  {"nick",list_to_binary(Nick)},
 				  {"score",0}]),
             {true, ReqData, Context};
-        _ ->
+        true ->
 	    {{error, "already_exists"}, ReqData, Context}
     end.   
+
+nick_already_used(Nick, [{obj,[{"nick", N},_]}|T]) ->
+    case binary_to_list(N) of
+	Nick -> true;
+	_    -> nick_already_used(Nick, T)
+    end;
+nick_already_used(_Nick, []) ->
+    false.
+	    

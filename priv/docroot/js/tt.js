@@ -21,9 +21,9 @@ function update_emsg (msg) {
 function render_ranking (x) {
   var directive = {
     'tr.scoreentry' : {
-      's<-scores' : {
-	'span.name'  : 's.nick',
-        'span.score' : 's.score'
+      'r<-ranking' : {
+	'span.name'  : 'r.nick',
+        'span.score' : 'r.score'
       }
     }
   };
