@@ -55,8 +55,8 @@ table {
     border-spacing: 0px;
 }
 
-table#ranking th span.name,table#ranking th span.score {padding-right: 20px;}
-table#ranking td span.name,table#ranking td span.score {padding-right: 20px;}
+table th span,table th span {padding-right: 20px;}
+table td span,table td span {padding-right: 20px;}
 
 .up-1 {margin:-20px 0 20px 0;}
 .down-1 {margin:20px 0 -20px 0;}

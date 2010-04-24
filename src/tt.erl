@@ -11,6 +11,7 @@
          ,gnow/0
          ,gdate/0
          ,gdate2datetime/1
+	 ,friendly_date/1
         ]).
 
 %%
@@ -42,6 +43,13 @@ rfc3339(Gsec) when is_integer(Gsec) ->
 rfc3339({{Year, Month, Day}, {Hour, Min, Sec}}) ->
     io_lib:format("~4..0w-~2..0w-~2..0wT~2..0w:~2..0w:~2..0w~s",
                   [Year,Month,Day, Hour, Min, Sec, zone()]).  
+
+friendly_date(Gsec) when is_integer(Gsec) ->
+    friendly_date(gdate2datetime(Gsec));
+
+friendly_date({{Year, Month, Day}, {Hour, Min, Sec}}) ->
+    io_lib:format("~4..0w-~2..0w-~2..0w ~2..0w:~2..0w:~2..0w",
+                  [Year,Month,Day, Hour, Min, Sec]).  
 
 zone() ->
     Time = erlang:universaltime(),

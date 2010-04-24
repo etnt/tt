@@ -64,7 +64,47 @@ function show_ranking () {
 
 // Show a list of last matches
 function show_matches () {
-  alert("Not yet implemented");
+  $.getJSON("/matches", {}, function (x) {
+    var table = '<table id="matches" class="template">\
+		  <thead>\
+		    <tr>\
+		      <th><span class="winner">Winner</span></td>\
+		      <th><span class="looser">Looser</span></td>\
+		      <th><span class="figures">Figures</span></td>\
+		      <th><span class="date">Date</span></td>\
+		    </tr>\
+		  </thead>\
+		  <tbody id="matchesdata">\
+		  </tbody>\
+		  </table>';
+    $('#main').html(table);
+    render_matches(x);
+  });
+}
+
+// Fill a table with the matches
+function render_matches(x) {
+  var directive = {
+    'tr.matchentry' : {
+      'r<-matches' : {
+	'span.winner'  : 'r.winner',
+	'span.looser'  : 'r.looser',
+	'span.figures' : 'r.figures',
+	'span.date'    : 'r.date'
+      }
+    }
+  };
+  var template = '<tr class="matchentry">\
+	    <td><span class="winner"></span></td>\
+	    <td><span class="looser"></span></td>\
+	    <td><span class="figures"></span></td>\
+	    <td><span class="date"></span></td>\
+	      </tr>';
+  $('#matchesdata').html(template);
+  $('#matches').render(x.data, directive);
+  $('tr:even.matchentry').addClass('even');
+  update_header(x.header);
+  update_emsg(x.emsg);
 }
 
 
@@ -94,10 +134,16 @@ function show_user(user) {
 
 // Register the score of the match
 function register_score (args) {
-  $.getJSON("/data/match?"+args, {}, function (x) {
-    update_header(x.header);
-    update_emsg(x.emsg);
-  });
+  $.ajax({
+	   url: "matches",
+	   type: "POST",
+	   data: args,
+	   success: function () {
+	     update_header("Match successfuly registered.");
+	   },
+	   error: function () {
+	     alert("An error happened.");
+	   }});
 }
 
 // Display a new match form.
@@ -191,7 +237,7 @@ function sign_up (args) {
 	   type: "POST",
 	   data: args,
 	   success: function () {
-	     alert("Your nick has been successfuly registered.");
+	     update_header("Your nick has been successfuly registered.");
 	   },
 	   error: function () {
 	     alert("Nick already used. Please try a new one.");

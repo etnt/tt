@@ -76,7 +76,7 @@ scores_map() ->
 matches_map() ->
     "function(doc) {"
 	"if(doc.type == 'match')"
-	"emit(doc.gsec, {winner:doc.winner, loose:doc.looser,"
+	"emit(doc.gsec, {winner:doc.winner, looser:doc.looser,"
 	"figures:doc.figures, gsec:doc.gsec}); }".
 
 users_map() ->

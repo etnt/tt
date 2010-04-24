@@ -8,7 +8,6 @@
 -module(tt_users_resource).
 -export([init/1]).
 -export([allowed_methods/2,
-%	 resource_exists/2,
 	 content_types_provided/2,
 	 content_types_accepted/2,
 	 create_user/2,
@@ -22,19 +21,7 @@
 init(Context) -> {ok, Context}.
 
 allowed_methods(ReqData, Context) ->
-    {['GET', 'PUT', 'POST'], ReqData, Context}.
-
-%% resource_exists(ReqData, Context) ->
-%%     Path = wrq:disp_path(ReqData),
-%%     case soma of 
-%% 	{true, _} ->
-%% 	    {true, ReqData, Context};
-%% 	_ ->
-%%             case Path of
-%%                 "p" -> {true, ReqData, Context};
-%%                 _ -> {false, ReqData, Context}
-%%             end
-%%     end.
+    {['GET', 'POST'], ReqData, Context}.
 
 content_types_provided(ReqData, Context) ->
     {[{"text/javascript",         return_data}
@@ -43,26 +30,21 @@ content_types_provided(ReqData, Context) ->
 
 %% /users return the users sorted by nick
 %% /users?ranking=true return the users sorted by ranking
+%% /users/username return the user page of a specific user
 return_data(ReqData, Context) ->    
     case wrq:disp_path(ReqData) of
 	[] ->
 	    ShowRanking = wrq:get_qs_value("ranking", ReqData),
-	    {get_users(ShowRanking), 
-	     tt_utils:set_content_type(ReqData, "application/json"), 
-	     Context};
+	    tt_utils:return(get_users(ShowRanking), ReqData, Context);
 	User ->
-	    {tt_utils:json_return_object(<<"User page">>, 
-					 {obj,tt_couchdb:get_user(User)}), 
-	     tt_utils:set_content_type(ReqData, "application/json"), 
-	     Context}
+	    Data = {<<"User page">>, {obj,tt_couchdb:get_user(User)}},
+	    tt_utils:return(Data, ReqData, Context)
     end.
 
 get_users("true") ->
-    D = {obj,[{ranking, tt_couchdb:ranking()}]},
-    tt_utils:json_return_object(<<"Ranking">>,D);
+    {<<"Ranking">>, {obj,[{ranking, tt_couchdb:ranking()}]}};
 get_users(_) ->
-    D = {obj, [{users, lists:reverse(tt_couchdb:users())}]},
-    tt_utils:json_return_object(<<"">>, D).
+    {<<"">>, {obj, [{users, lists:reverse(tt_couchdb:users())}]}}.
 
 %%
 %% Functions that handle the creation of a new user
