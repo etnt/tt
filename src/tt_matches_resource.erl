@@ -76,8 +76,9 @@ create_match(ReqData, Context) ->
 update_score_wl(WinnerNick, LooserNick) ->
     Winner = tt_couchdb:get_user(WinnerNick),
     Looser = tt_couchdb:get_user(LooserNick),
-    {WScore, LScore} = tt_scoring:v1(proplists:get_value("score",Winner),
-				     proplists:get_value("score",Looser)),
+    {WScore, LScore} = tt_scoring:gen_new_scores(
+			 proplists:get_value("score",Winner),
+			 proplists:get_value("score",Looser)),
     update_user_score(Winner, WScore),
     update_user_score(Looser, LScore).
 
