@@ -71,7 +71,8 @@ create_user(ReqData, Context) ->
         no_exists ->
 	    tt_couchdb:store_doc([{"type",<<"user">>},
 				  {"nick",list_to_binary(Nick)},
-				  {"score",0}]),
+				  {"score",0}, {"matches", 0},
+				  {"wins", 0}, {"losses", 0}]),
             {true, ReqData, Context};
         _ ->
 	    {{error, "already_exists"}, ReqData, Context}

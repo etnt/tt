@@ -22,14 +22,20 @@ function render_ranking (x) {
   var directive = {
     'tr.scoreentry' : {
       'r<-ranking' : {
-	'span.name'  : 'r.nick',
-        'span.score' : 'r.score'
+	'span.name'   : 'r.nick',
+        'span.score'  : 'r.score',
+	'span.matches': 'r.matches',
+	'span.wins'   : 'r.wins',
+	'span.losses' : 'r.losses'
       }
     }
   };
   var template = '<tr class="scoreentry">\
 	    <td><span class="name"></span></td>\
 	    <td><span class="score"></span></td>\
+	    <td><span class="matches"></span></td>\
+  	    <td><span class="wins"></span></td>\
+  	    <td><span class="losses"></span></td>\
   </tr>';
   $('#scoredata').html(template);
   $('#ranking').render(x.data, directive);
@@ -47,6 +53,9 @@ function show_ranking () {
 		    <tr>\
 		      <th><span class="name">Name</span></td>\
 		      <th><span class="score">Score</span></td>\
+		      <th><span class="matches">Matches</span></td>\
+	      	      <th><span class="wins">Wins</span></td>\
+	      	      <th><span class="losses">Defeats</span></td>\
 		    </tr>\
 		  </thead>\
 		  <tbody id="scoredata">\

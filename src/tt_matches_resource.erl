@@ -79,9 +79,21 @@ update_score_wl(WinnerNick, LooserNick) ->
     {WScore, LScore} = tt_scoring:gen_new_scores(
 			 proplists:get_value("score",Winner),
 			 proplists:get_value("score",Looser)),
-    update_user_score(Winner, WScore),
-    update_user_score(Looser, LScore).
+    update_user_score(Winner, WScore, winner),
+    update_user_score(Looser, LScore, looser).
 
-update_user_score(User, NewScore) ->
-    User2 = [{"score", NewScore} | proplists:delete("score", User)],
-    tt_couchdb:update_user(User2).
+update_user_score(User, NewScore, Result) ->
+    NewMatches = proplists:get_value("matches", User) + 1,
+    User2 = proplists:delete("score", User),
+    User3 = proplists:delete("matches", User2),
+    {Tuple, User4} = 
+	case Result of
+	    winner ->
+		NewWins = proplists:get_value("wins", User3) + 1,
+		{{"wins", NewWins}, proplists:delete("wins", User3)};
+	    looser ->
+		NewLosses = proplists:get_value("losses", User3) + 1,
+		{{"losses", NewLosses}, proplists:delete("losses", User3)}
+	end,
+    User5 = [{"score", NewScore}, {"matches", NewMatches}, Tuple | User4],
+    tt_couchdb:update_user(User5).

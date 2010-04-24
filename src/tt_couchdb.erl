@@ -88,7 +88,8 @@ users_map() ->
 ranking_map() ->
     "function(doc) {"
 	"if(doc.type == 'user')"
-	"emit(doc.score, {nick:doc.nick, score:doc.score});}".
+	"emit(doc.score, {nick:doc.nick, score:doc.score, matches:doc.matches,"
+	"wins:doc.wins, losses:doc.losses});}".
 
 
 %%

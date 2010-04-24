@@ -15,9 +15,7 @@
 
 gen_new_scores(W, L) ->
     {NW, NL} = v1(W, L),
-    [NW2] = io_lib:format("~.3f", [NW]),
-    [NL2] = io_lib:format("~.3f", [NL]),
-    {list_to_float(NW2), list_to_float(NL2)}.
+    {format(NW), format(NL)}.
 
 v1(W, L) when W > L -> 
     {W + min(1, (1 / (W - L))), L - min(0.7, (1 / ((W - L) * 2)))};
@@ -38,3 +36,11 @@ max(A, B) ->
 	false -> B
     end.
 	    
+format(Score) ->
+    case is_integer(Score) of
+	true -> 
+	    Score;
+	false -> 
+	    [Score2] = io_lib:format("~.3f", [Score]),
+	    list_to_float(Score2)
+    end.
