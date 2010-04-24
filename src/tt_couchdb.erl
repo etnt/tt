@@ -7,10 +7,12 @@
 %%%-------------------------------------------------------------------
 -module(tt_couchdb).
 
--export([init/0,
-	 scores/0
+-export([init/0
+	 ,scores/0
          ,matches/0
 	 ,users/0
+	 ,ranking/0
+	 ,get_user/1
          ,store_doc/1
          ,store_doc/2
         ]).
@@ -30,6 +32,7 @@
 -define(SCORES_VIEW, "scores").
 -define(MATCHES_VIEW, "matches").
 -define(USERS_VIEW, "users").
+-define(RANKING_VIEW, "ranking").
 -define(VIEWS_PATH, ?HOST ++ ?DB_NAME ++ "/" ++ ?DESIGN_DOC ++ "/_view/").
 -define(DESIGN_PATH, ?HOST ++ ?DB_NAME ++ "/" ++ ?DESIGN_DOC).
 
@@ -62,7 +65,8 @@ init_design_doc() ->
 views() ->
     [{?SCORES_VIEW, {obj, [{"map", list_to_binary(scores_map())}]}},
      {?MATCHES_VIEW, {obj, [{"map", list_to_binary(matches_map())}]}},
-     {?USERS_VIEW, {obj, [{"map", list_to_binary(users_map())}]}}].
+     {?USERS_VIEW, {obj, [{"map", list_to_binary(users_map())}]}},
+     {?RANKING_VIEW, {obj, [{"map", list_to_binary(ranking_map())}]}}].
 
 scores_map() ->
     "function(doc) {"
@@ -76,6 +80,11 @@ matches_map() ->
 	"figures:doc.figures, gsec:doc.gsec}); }".
 
 users_map() ->
+    "function(doc) {"
+	"if(doc.type == 'user')"
+	"emit(doc.nick, doc);}".
+
+ranking_map() ->
     "function(doc) {"
 	"if(doc.type == 'user')"
 	"emit(doc.score, {nick:doc.nick, score:doc.score});}".
@@ -95,24 +104,42 @@ store_doc(KeyValList, Created) ->
     http_post_req(?HOST ++ ?DB_NAME, Body).
 
 %%
-%% @doc Get the scores from CouchDB
+%% @doc Get the scores from the db
 %%
 scores() ->
     get_from_couchdb(?VIEWS_PATH ++ ?SCORES_VIEW).
 
 %%
-%% @doc Get the matches from CouchDB
+%% @doc Get the matches from the db
 %%
 matches() ->
     get_from_couchdb(?VIEWS_PATH ++ ?MATCHES_VIEW).
 
 %%
-%% @doc Get the users from CouchDB
+%% @doc Get the users from the db
 %%
 users() ->
     get_from_couchdb(?VIEWS_PATH ++ ?USERS_VIEW).
 
-    
+%%
+%% @doc Get the ranking of the users from the db
+%%
+ranking() ->
+    get_from_couchdb(?VIEWS_PATH ++ ?RANKING_VIEW).
+
+%%
+%% @doc Get a user from the db
+%%
+get_user(User) ->
+    {obj, PL} = http_get_req(?VIEWS_PATH ++ ?USERS_VIEW ++ 
+				 "?key=\"" ++ User ++ "\""),
+    case proplists:get_value("rows", PL) of
+	[] ->
+	    no_exists;
+	[{obj, [_Id, _Key, {"value", {obj, Data}}]}] ->
+	    Data
+    end.
+
 
 get_from_couchdb(Url) ->
     R = http_get_req(Url),

@@ -34,14 +34,14 @@ function render_ranking (x) {
   $('#scoredata').html(template);
   $('#ranking').render(x.data, directive);
   $('tr:even.scoreentry').addClass('even');
+  $(".name").click(function() {show_user($(this).text())});
   update_header(x.header);
   update_emsg(x.emsg);
-  $('#scoreboard').show();
 }
 
 // Insert a table into the main area.
 function show_ranking () {
-  $.getJSON("/data/ranking", {}, function (x) {
+  $.getJSON("/users?ranking=true", {}, function (x) {
     var table = '<table id="ranking" class="template">\
 		  <thead>\
 		    <tr>\
@@ -57,19 +57,42 @@ function show_ranking () {
   });
 }
 
-// Show a ranking table of all players with their scores.
-function show_scores () {
-  $.getJSON("/data/ranking", {}, function (x) {
-    render_ranking(x);
+
+/*
+ *  M A T C H E S   P A G E
+ */
+
+// Show a list of last matches
+function show_matches () {
+  alert("Not yet implemented");
+}
+
+
+/*
+ *  U S E R   P A G E
+ */
+function render_user(x) {
+  var date = x.data.created_tz.split("T");
+  var user_info = "<p>Nick: " + x.data.nick + "</p>"
+		    + "<p>Score: " + x.data.score + "</p>"
+		    + "<p>Registered: " + date[0] + "</p>";
+  $('#main').html(user_info);
+  update_header(x.header);
+  update_emsg(x.emsg);
+}
+
+function show_user(user) {
+  $.getJSON("/users/" + user, {}, function (x) {
+    render_user(x);
   });
 }
 
 
 /*
- *  M A T C H   P A G E
+ *  N E W  M A T C H   P A G E
  */
 
-// Register the score data
+// Register the score of the match
 function register_score (args) {
   $.getJSON("/data/match?"+args, {}, function (x) {
     update_header(x.header);
@@ -77,9 +100,8 @@ function register_score (args) {
   });
 }
 
-
-// Display a match form.
-function render_match (x) {
+// Display a new match form.
+function render_new_match (x) {
   var directive = {
     'option.users' : {
       'u<-users' : {
@@ -151,9 +173,9 @@ function render_match (x) {
     $('#regform').show();
 }
 
-function show_match () {
+function show_new_match () {
   $.getJSON("users", {}, function (x) {
-	      render_match(x);
+	    render_new_match(x);
   });
 }
 
@@ -228,8 +250,8 @@ function show_about () {
 // Setup the actions of the navigation bar.
 function setup_navbar () {
   $("#nranking").click(function() {show_ranking()});
-  $("#nmatch").click(function() {show_match()});
-  $("#nscores").click(function() {show_scores()});
+  $("#nnewmatch").click(function() {show_new_match()});
+  $("#nmatches").click(function() {show_matches()});
   $("#nsign").click(function() {show_signup()});
   $("#nabout").click(function() {show_about()});
 }

@@ -34,9 +34,6 @@ return_data(ReqData, Context) ->
 data(ReqData) ->
     data(wrq:path_info(what,ReqData),ReqData).
 
-data("ranking", _ReqData) ->
-    D = {obj,[{ranking, tt_couchdb:users()}]},
-    tt_utils:json_return_object(<<"Ranking">>,D);
 data("match", ReqData) ->
     Emsg = case validate_figures(wrq:get_qs_value("figures",ReqData)) of
                ok -> 

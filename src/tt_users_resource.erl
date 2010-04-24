@@ -41,17 +41,28 @@ content_types_provided(ReqData, Context) ->
       ,{"application/javascript", return_data}
      ], ReqData, Context}.
 
-return_data(ReqData, Context) ->
+%% /users return the users sorted by nick
+%% /users?ranking=true return the users sorted by ranking
+return_data(ReqData, Context) ->    
     case wrq:disp_path(ReqData) of
-	"" ->
-	    Data = tt_utils:json_return_object(
-		     <<"">>, {obj, [{users, tt_couchdb:users()}]}),
-	    {Data, 
+	[] ->
+	    ShowRanking = wrq:get_qs_value("ranking", ReqData),
+	    {get_users(ShowRanking), 
 	     tt_utils:set_content_type(ReqData, "application/json"), 
 	     Context};
-	_ ->
-	    io:format("~p~n", [wrq:disp_path(ReqData)])
+	User ->
+	    {tt_utils:json_return_object(<<"User page">>, 
+					 {obj,tt_couchdb:get_user(User)}), 
+	     tt_utils:set_content_type(ReqData, "application/json"), 
+	     Context}
     end.
+
+get_users("true") ->
+    D = {obj,[{ranking, tt_couchdb:ranking()}]},
+    tt_utils:json_return_object(<<"Ranking">>,D);
+get_users(_) ->
+    D = {obj, [{users, lists:reverse(tt_couchdb:users())}]},
+    tt_utils:json_return_object(<<"">>, D).
 
 %%
 %% Functions that handle the creation of a new user
@@ -74,22 +85,13 @@ create_path(ReqData, Context) ->
 
 create_user(ReqData, Context) ->
     Nick = wrq:disp_path(ReqData),
-    Users = tt_couchdb:users(),
-    case nick_already_used(Nick, Users) of
-        false ->
+    case tt_couchdb:get_user(Nick) of
+        no_exists ->
 	    tt_couchdb:store_doc([{"type",<<"user">>},
 				  {"nick",list_to_binary(Nick)},
 				  {"score",0}]),
             {true, ReqData, Context};
-        true ->
+        _ ->
 	    {{error, "already_exists"}, ReqData, Context}
     end.   
 
-nick_already_used(Nick, [{obj,[{"nick", N},_]}|T]) ->
-    case binary_to_list(N) of
-	Nick -> true;
-	_    -> nick_already_used(Nick, T)
-    end;
-nick_already_used(_Nick, []) ->
-    false.
-	    
