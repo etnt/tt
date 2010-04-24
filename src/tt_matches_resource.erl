@@ -69,21 +69,18 @@ create_match(ReqData, Context) ->
          || Key <- ["winner","looser","figures"]],
     Winner = proplists:get_value("winner", PL),
     Looser = proplists:get_value("looser", PL),
-    update_score_wl(Winner, Looser, tt_couchdb:ranking()),
+    update_score_wl(Winner, Looser),
     tt_couchdb:store_doc([{"type",<<"match">>}|L]),
     {true, ReqData, Context}.
 
-update_score_wl(Winner, Looser, Users) ->
-    {WScore, LScore} = new_scores(Winner, Looser, Users, {0, 0}),
-    io:format("~p ~p~n", [WScore, LScore]).
+update_score_wl(WinnerNick, LooserNick) ->
+    Winner = tt_couchdb:get_user(WinnerNick),
+    Looser = tt_couchdb:get_user(LooserNick),
+    {WScore, LScore} = tt_scoring:v1(proplists:get_value("score",Winner),
+				     proplists:get_value("score",Looser)),
+    update_user_score(Winner, WScore),
+    update_user_score(Looser, LScore).
 
-new_scores(Winner, Looser, [{obj, [{"nick", Winner}, {"score", WS}]}|T],
-	   {_, LS}) ->
-    new_scores(Winner, Looser, T, {WS, LS});
-new_scores(Winner, Looser, [{obj, [{"nick", Looser}, {"score", LS}]}|T],
-	   {WS, _}) ->
-    new_scores(Winner, Looser, T, {WS, LS});
-new_scores(Winner, Looser, [_|T], {WS, LS}) ->
-    new_scores(Winner, Looser, T, {WS, LS});
-new_scores(_Winner, _Looser, [], {WS, LS}) ->
-    tt_scoring:v1(WS, LS).
+update_user_score(User, NewScore) ->
+    User2 = [{"score", NewScore} | proplists:delete("score", User)],
+    tt_couchdb:update_user(User2).

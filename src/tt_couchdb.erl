@@ -15,6 +15,7 @@
 	 ,get_user/1
          ,store_doc/1
          ,store_doc/2
+	 ,update_user/1
         ]).
 
 -export([http_get_req/1
@@ -100,7 +101,7 @@ store_doc(KeyValList, Created) ->
     Z = [{"gsec", Created},
          {"created_tz", list_to_binary(lists:flatten(tt:rfc3339(Created)))}
          | KeyValList],
-    Body =  rfc4627:encode({obj, Z}),
+    Body = rfc4627:encode({obj, Z}),
     http_post_req(?HOST ++ ?DB_NAME, Body).
 
 %%
@@ -140,6 +141,13 @@ get_user(User) ->
 	    Data
     end.
 
+%%
+%% @doc Update a user document
+%%
+update_user(User) ->
+    Id = binary_to_list(proplists:get_value("_id", User)),
+    http_put_req(?HOST ++ ?DB_NAME ++ "/" ++ Id, rfc4627:encode({obj, User})).
+    
 
 get_from_couchdb(Url) ->
     R = http_get_req(Url),
