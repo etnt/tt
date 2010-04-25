@@ -44,6 +44,8 @@ body {
 
 h1 {
   padding: 25px 0 0 30px;
+  background: url(../images/logo.png) no-repeat;
+  height: 200px;
   font: 40px Constantina,Georgia,'Nimbus Roman No9 L',serif;
   color: #151515;
 }
