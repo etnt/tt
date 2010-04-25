@@ -37,31 +37,90 @@ index() ->
     <link rel='shortcut icon' href='/assets/images/favicon.ico' />
   </head>
   <body>
-   <div id=\"container\">
-
-    <div id=\"nav\">
-      <a href=\"#\" id=\"nranking\" class=\"nav_link\">Ranking</a>
-      <span class=\"nav_sep\">|</span>
-      <a href=\"#\" id=\"nmatches\" class=\"nav_link\">Matches</a>
-      <span class=\"nav_sep\">|</span>
-      <a href=\"#\" id=\"nnewmatch\" class=\"nav_link\">New match</a>
-      <span class=\"nav_sep\">|</span>
-      <a href=\"#\" id=\"nsign\" class=\"nav_link\">Sign up</a>
-      <span class=\"nav_sep\">|</span>
-      <a href=\"#\" id=\"nabout\" class=\"nav_link\">About</a>
-    </div>
-    <hr size=\"1\" class=\"hr\" />
-
-    <div id=\"top\">
-      <span id=\"header\"></span><span id=\"emsg\"></span>
-
-      <div id=\"main\">
-
-        <!-- HTML dynamically ends up here... -->
-
+<div id=\"wrapper\">
+  <h1><em>PING PONG</em> KLARNA</h1>
+  <div id=\"topcon\">
+    <div id=\"topcon-inner\">
+      <h2>Sign up</h2>
+      <p>Hi Klarna employee and welcome to our ping pong table tracking system!</p>
+      <p>Sign up, start registering your ping pong matches and climb to the top of the ranking!</p>
+      <form id=\"signform\">
+      <div>
+	<label for=\"nick\">Nick:</label>
+	<input type=\"text\" id=\"nick\" name=\"nick\" />
+        <input type=\"submit\" name=\"g\" value=\"Sign up!\" id=\"g\" />
       </div>
+      </form>
     </div>
-   </div>
+  </div>
+  <div id=\"content\">
+    <div id=\"body\">
+      <div class=\"box\" id=\"news\">
+        <div class=\"box-t\">
+          <div class=\"box-r\">
+            <div class=\"box-b\">
+              <div class=\"box-l\">
+                <div class=\"box-tr\">
+                  <div class=\"box-br\">
+                    <div class=\"box-bl\">
+                      <div class=\"box-tl\">
+                        <h2>User Info</h2>
+                        <h3>05.03.2007</h3>
+                        <p>Even more websites all about website templates on <a href=\"http://www.justwebtemplates.com\">Just Web Templates</a>.</p>
+                        <p class=\"more\"><a href=\"http://www.free-css.com/\">more...</a></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class=\"box\" id=\"hits\">
+        <div class=\"box-t\">
+          <div class=\"box-r\">
+            <div class=\"box-b\">
+              <div class=\"box-l\">
+                <div class=\"box-tr\">
+                  <div class=\"box-br\">
+                    <div class=\"box-bl\">
+                      <div class=\"box-tl\" id=\"nranking\">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class=\"box\" id=\"new\">
+        <div class=\"box-t\">
+          <div class=\"box-r\">
+            <div class=\"box-b\">
+              <div class=\"box-l\">
+                <div class=\"box-tr\">
+                  <div class=\"box-br\">
+                    <div class=\"box-bl\">
+                      <div class=\"box-tl\" id=\"nmatches\">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class=\"clear\"> </div>
+    </div>
+    <div id=\"footer\">
+      <ul>
+      </ul>
+    </div>
+  </div>
+</div>
   </body>
 </html>
 ">>.

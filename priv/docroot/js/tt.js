@@ -41,27 +41,26 @@ function render_ranking (x) {
   $('#ranking').render(x.data, directive);
   $('tr:even.scoreentry').addClass('even');
   $(".name").click(function() {show_user($(this).text())});
-  update_header(x.header);
-  update_emsg(x.emsg);
 }
 
 // Insert a table into the main area.
 function show_ranking () {
   $.getJSON("/users?ranking=true", {}, function (x) {
-    var table = '<table id="ranking" class="template">\
+    var table = '<h2>RANKING</h2>\
+		 <table id="ranking" class="template">\
 		  <thead>\
 		    <tr>\
-		      <th><span class="name">Name</span></td>\
-		      <th><span class="score">Score</span></td>\
-		      <th><span class="matches">Matches</span></td>\
-	      	      <th><span class="wins">Wins</span></td>\
-	      	      <th><span class="losses">Defeats</span></td>\
+		      <th scope="col"><span class="name">Name</span></td>\
+		      <th scope="col"><span class="score">Score</span></td>\
+		      <th scope="col"><span class="matches">Matches</span></td>\
+	      	      <th scope="col"><span class="wins">Wins</span></td>\
+	      	      <th scope="col"><span class="losses">Defeats</span></td>\
 		    </tr>\
 		  </thead>\
 		  <tbody id="scoredata">\
 		  </tbody>\
 		  </table>';
-    $('#main').html(table);
+    $('#nranking').html(table);
     render_ranking(x);
   });
 }
@@ -74,19 +73,20 @@ function show_ranking () {
 // Show a list of last matches
 function show_matches () {
   $.getJSON("/matches", {}, function (x) {
-    var table = '<table id="matches" class="template">\
+    var table = '<h2>LAST MATCHES</h2>\
+		  <table id="matches" class="template">\
 		  <thead>\
 		    <tr>\
-		      <th><span class="winner">Winner</span></td>\
-		      <th><span class="looser">Looser</span></td>\
-		      <th><span class="figures">Figures</span></td>\
-		      <th><span class="date">Date</span></td>\
+		      <th scope="col"><span class="winner">Winner</span></td>\
+		      <th scope="col"><span class="looser">Looser</span></td>\
+		      <th scope="col"><span class="figures">Figures</span></td>\
+		      <th scope="col"><span class="date">Date</span></td>\
 		    </tr>\
 		  </thead>\
 		  <tbody id="matchesdata">\
 		  </tbody>\
 		  </table>';
-    $('#main').html(table);
+    $('#nmatches').html(table);
     render_matches(x);
   });
 }
@@ -246,73 +246,31 @@ function sign_up (args) {
 	   type: "POST",
 	   data: args,
 	   success: function () {
-	     update_header("Your nick has been successfuly registered.");
+	     $('#nick').val("");
+	     alert("Good! Start playing!");
+	     show_ranking();
 	   },
 	   error: function () {
 	     alert("Nick already used. Please try a new one.");
-	     }});
+	   }});
 }
 
-function show_signup() {
-  var form =
-    '<form id="signform">\
-      <div>\
-	<label for="nick">Nick:</label>\
-	<input type="text" id="nick" name="nick" />\
-      </div>\
-      <div class="submit">\
-        <input type="submit" name="g" value="Submit" id="g" />\
-      </div>\
-    </form>';
-  $('#main').html(form);
-  update_header('Create a new user');
 
-  // Setup the Submit button to do some simple sanity
-  // checks the nick and then submit the data!
-  $('#signform').submit(function () {
+// Do stuff at page load.
+$(function () {
+    // Setup signup form
+    $('#signform').submit(function () {
     var nick = $('#nick').val();
-    if (nick.length > 0) {
+    if (nick.length > 2 && nick.length < 10) {
       if (/^[a-zA-Z]+[a-zA-Z0-9]*$/.test(nick))
 	sign_up($('#signform').serialize());
       else alert("'Nick' has wrong format!");
     }
-    else alert("'Nick' has wrong format!");
+    else alert("'Nick' has wrong format! It should have between 3 and 9"
+	       + " characters and it should only contain letters and numbers");
     return false;
-  });
+    });
 
-  // Show the form
-  $('#signform').show();
-}
-
-
-/*
- *  A B O U T  P A G E
- */
-
-function show_about () {
-    var about = '<p>This a Table Tennis Score system to keep track of '
-		  + 'the amazing games that are played every day at Klarna!</p>';
-    update_header('About');
-    update_emsg('');
-    $('#main').html(about);
-}
-
-
-/*
- *  I N I T A L I S A T I O N   A T   P A G E   L O A D
- */
-
-// Setup the actions of the navigation bar.
-function setup_navbar () {
-  $("#nranking").click(function() {show_ranking()});
-  $("#nnewmatch").click(function() {show_new_match()});
-  $("#nmatches").click(function() {show_matches()});
-  $("#nsign").click(function() {show_signup()});
-  $("#nabout").click(function() {show_about()});
-}
-
-// Do stuff at page load.
-$(function () {
     show_ranking();
-    setup_navbar();
+    show_matches();
 })
