@@ -2,15 +2,12 @@
  *    http://bitbucket.org/etnt/tt/
  */
 
-// Functions to add text to various parts on the page
-function update_header (hdr) {
-  if (hdr != "")
-    $('#header').text(hdr);
-}
-
-function update_emsg (msg) {
-  if (msg != "")
-    $('#emsg').text(msg);
+function is_int(value){
+  if((parseFloat(value) == parseInt(value)) && !isNaN(parseInt(value))){
+      return true;
+ } else {
+      return false;
+ }
 }
 
 /*
@@ -78,8 +75,8 @@ function show_matches () {
 		  <thead>\
 		    <tr>\
 		      <th scope="col"><span class="winner">Winner</span></td>\
-		      <th scope="col"><span class="looser">Looser</span></td>\
-		      <th scope="col"><span class="figures">Figures</span></td>\
+		      <th scope="col"><span class="looser">Loser</span></td>\
+		      <th scope="col"><span class="figs">Figures</span></td>\
 		      <th scope="col"><span class="date">Date</span></td>\
 		    </tr>\
 		  </thead>\
@@ -98,7 +95,7 @@ function render_matches(x) {
       'r<-matches' : {
 	'span.winner'  : 'r.winner',
 	'span.looser'  : 'r.looser',
-	'span.figures' : 'r.figures',
+	'span.figs'    : 'r.figures',
 	'span.date'    : 'r.date'
       }
     }
@@ -106,34 +103,12 @@ function render_matches(x) {
   var template = '<tr class="matchentry">\
 	    <td><span class="winner"></span></td>\
 	    <td><span class="looser"></span></td>\
-	    <td><span class="figures"></span></td>\
+	    <td><span class="figs"></span></td>\
 	    <td><span class="date"></span></td>\
 	      </tr>';
   $('#matchesdata').html(template);
   $('#matches').render(x.data, directive);
   $('tr:even.matchentry').addClass('even');
-  update_header(x.header);
-  update_emsg(x.emsg);
-}
-
-
-/*
- *  U S E R   P A G E
- */
-function render_user(x) {
-  var date = x.data.created_tz.split("T");
-  var user_info = "<p>Nick: " + x.data.nick + "</p>"
-		    + "<p>Score: " + x.data.score + "</p>"
-		    + "<p>Registered: " + date[0] + "</p>";
-  $('#main').html(user_info);
-  update_header(x.header);
-  update_emsg(x.emsg);
-}
-
-function show_user(user) {
-  $.getJSON("/users/" + user, {}, function (x) {
-    render_user(x);
-  });
 }
 
 
@@ -148,7 +123,9 @@ function register_score (args) {
 	   type: "POST",
 	   data: args,
 	   success: function () {
-	     update_header("Match successfuly registered.");
+	     show_ranking();
+	     show_matches();
+	     show_new_match();
 	   },
 	   error: function () {
 	     alert("An error happened.");
@@ -165,67 +142,24 @@ function render_new_match (x) {
 	  }
     }
   };
-  var template =
-    '<form id="regform">\
-      <div>\
-	<table id="regtable">\
-	  <thead>\
-	    <tr>\
-	      <th>Winner</th>\
-	      <th>&nbsp;</th>\
-	      <th>Looser</th>\
-	    </tr>\
-	  </thead>\
-	  <tbody>\
-	    <tr>\
-	      <td>\
-		<select id="winner" name="winner">\
-		  <option class="users" value="" ></option>\
-		</select>\
-	      </td>\
-	      <td><span class="mdash">&mdash;</span></td>\
-	      <td>\
-		<select name="looser">\
-		  <option class="users" value="" ></option>\
-		</select>\
-	      </td>\
-	    </tr>\
-	  </tbody>\
-	</table>\
-      <div>\
-	<label for="figures">Figures:</label>\
-	<input type="text" id="figures" name="figures" />\
-      </div>\
-      <div class="submit">\
-        <input type="submit" name="g" value="Submit" id="g" />\
-      </div>\
-    </form>';
+  $('.usersselect').html("<option class=\"users\" value=\"\" ></option>");
+  $('#regform').render(x.data, directive);
 
-    // Populate the DOM with the template
-    $('#main').html(template);
-    // Populate the template with the data
-    $('#regform').render(x.data, directive);
-    // Update other parts of the page
-    update_header('Add a match');
-
-    // Setup the Submit button to do some simple sanity
-    // checks of the figures and then submit the data!
-    $('#regform').submit(function () {
-      var figures = $('#figures').val();
-      if (figures.length > 0) {
-	if (/^(([0-9]|[1][0-1])-([0-9]|[1][0-1]))+(,([0-9]|[1][0-1])-([0-9]|[1][0-1]))*$/.test(figures))
-	  register_score($('#regform').serialize());
-	else
-	  alert("'Figures' has wrong format!");
-      }
-      else
-	register_score($('#regform').serialize());
-
-      return false;
-    });
-
-    // Show the form
-    $('#regform').show();
+  // Setup the Submit button to do some simple sanity
+  // checks of the figures and then submit the data!
+  $('#regform').submit(function () {
+    if ($('#winner').val() == $('#looser').val())
+      alert("Winner and loser are the same players");
+    else {
+      var wfigures = $('#wfigures').val();
+      var lfigures = $('#lfigures').val();
+      if (wfigures.length > 0 && lfigures.length > 0 && is_int(wfigures)
+	&& is_int(lfigures) && parseInt(wfigures) > parseInt(lfigures))
+	    register_score($('#regform').serialize());
+      else alert("'Figures' are not correct");
+    }
+    return false;
+  });
 }
 
 function show_new_match () {
@@ -273,4 +207,5 @@ $(function () {
 
     show_ranking();
     show_matches();
+    show_new_match();
 })

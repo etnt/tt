@@ -66,11 +66,14 @@ create_path(ReqData, Context) ->
 create_match(ReqData, Context) ->
     PL = mochiweb_util:parse_qs(wrq:req_body(ReqData)),
     L = [{Key, list_to_binary(proplists:get_value(Key, PL))} 
-         || Key <- ["winner","looser","figures"]],
+         || Key <- ["winner","looser"]],
     Winner = proplists:get_value("winner", PL),
     Looser = proplists:get_value("looser", PL),
+    WFigures = proplists:get_value("wfigures", PL),
+    LFigures = proplists:get_value("lfigures", PL),
+    Figures = list_to_binary(WFigures ++ "-" ++ LFigures),
     update_score_wl(Winner, Looser),
-    tt_couchdb:store_doc([{"type",<<"match">>}|L]),
+    tt_couchdb:store_doc([{"type",<<"match">>}, {"figures", Figures}|L]),
     {true, ReqData, Context}.
 
 update_score_wl(WinnerNick, LooserNick) ->

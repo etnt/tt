@@ -38,7 +38,7 @@ index() ->
   </head>
   <body>
 <div id=\"wrapper\">
-  <h1><em>PING PONG</em> KLARNA</h1>
+  <h1><em>PING PONG at KLARNA</em></h1>
   <div id=\"topcon\">
     <div id=\"topcon-inner\">
       <h2>Sign up</h2>
@@ -64,10 +64,37 @@ index() ->
                   <div class=\"box-br\">
                     <div class=\"box-bl\">
                       <div class=\"box-tl\">
-                        <h2>User Info</h2>
-                        <h3>05.03.2007</h3>
-                        <p>Even more websites all about website templates on <a href=\"http://www.justwebtemplates.com\">Just Web Templates</a>.</p>
-                        <p class=\"more\"><a href=\"http://www.free-css.com/\">more...</a></p>
+                        <h2>NEW MATCH</h2>
+                        <form id=\"regform\">
+                           <div class=\"result\">
+                              <div class=\"resultselect\">
+                                  <h3 id=\"h3winner\">Winner</h3>
+		                  <select class=\"usersselect\" id=\"winner\" name=\"winner\">
+		                  <option class=\"users\" value=\"\" ></option>
+		                  </select>
+                              </div>
+                              <div class=\"scoreboard\">
+                                  <input class=\"figures\" maxlength=\"2\" type=\"text\" id=\"wfigures\" name=\"wfigures\" />
+                              </div>
+                           </div>
+                           <div id=\"dash\">
+                                  <span class=\"mdash\">&mdash;</span></td>
+                           </div>
+                           <div class=\"result\">
+                              <div class=\"scoreboard\">
+                                  <input class=\"figures\" maxlength=\"2\" type=\"text\" id=\"lfigures\" name=\"lfigures\" />
+                              </div>
+                              <div class=\"resultselect\">
+                                  <h3 id=\"h3loser\">Loser</h3>
+		                  <select class=\"usersselect\" id=\"looser\" name=\"looser\">
+		                  <option class=\"users\" value=\"\" ></option>o
+		                  </select>
+                              </div>
+                           </div>
+                           <div id=\"submit\">
+                             <input type=\"submit\" name=\"g\" value=\"Submit\" id=\"g\" />
+                           </div>
+                         </form>
                       </div>
                     </div>
                   </div>

@@ -44,7 +44,7 @@ body {
 
 h1 {
   padding: 25px 0 0 30px;
-  font: 32px "arial black", arial, sans-serif;
+  font: 40px Constantina,Georgia,'Nimbus Roman No9 L',serif;
   color: #151515;
 }
 
@@ -195,7 +195,6 @@ p.more {
   margin-bottom: 1.5em;
 }
 #body h3 {
-  font-size: 9px;
   color: #FFEA00;
 }
 #body .more a {
@@ -228,37 +227,112 @@ p.more {
 
 
 /** tables **/
-#ranking
-{
+#ranking {
     width: 370px;
 }
-#matches
-{
+#matches {
     width: 350px;
 }
-table
-{
+table {
 	font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
 	font-size: 12px;
 	margin: 15px;
 	border-collapse: collapse;
 	text-align: left;
 }
-table th
-{
+table th {
 	font-size: 14px;
 	font-weight: normal;
 	color: #ffffff;
 	padding: 10px 8px;
 	border-bottom: 2px solid #ffea00;
 }
-table td
-{
+table td {
 	border-bottom: 1px dashed #ffea00;
 	color: #ffffff;
 	padding: 6px 8px;
 }
-table tbody tr:hover td
-{
+table tbody tr:hover td {
 	color: #ffea00;
 }
+
+
+/** new match form **/
+.result, .resultselect, .scoreboard, #dash, #submit {
+    overflow: hidden,
+    display: inline-block;
+}
+
+.result, #dash, .resultselect, .scoreboard {
+    float: left;
+}
+
+.result {
+    width: 43%;
+}
+
+#h3winner {
+    margin-left: 3px;
+}
+
+#h3loser {
+    float: right;
+}
+
+#dash {
+    width: 14%;
+    margin-top: 17px;
+}
+
+#dash span {
+    color: #ffea00;
+    margin-left: 20px;
+}
+
+.resultselect {
+    width: 60%;
+}
+
+.scoreboard {
+    width: 40%;
+}
+
+#submit input {
+    margin-top: 10px;
+    margin-left: 308px;
+}
+
+.figures {
+    font-family: Comic Sans, Comic Sans MS, cursive;
+    width: 50px;
+    height: 50px;
+    -webkit-border-radius: 7px; 
+    -moz-border-radius: 7px; 
+    border-radius: 7px;
+    border: 2px solid #000;
+    background: #ddd;
+    font-size: 30px;
+    font-weight: 900;
+    text-align: center;
+    margin-left: 6px;
+}
+.figures:focus
+{
+    margin-left: 6px;
+    outline-color: -moz-use-text-color !important; 
+    outline-style: none !important; 
+    outline-width: 0 !important; 
+}
+
+.usersselect {
+    width: 100%;
+    text-align: center;
+    padding: 5px;
+}
+.usersselect:focus
+{
+    outline-color: -moz-use-text-color !important; 
+    outline-style: none !important; 
+    outline-width: 0 !important; 
+}
+
