@@ -183,6 +183,7 @@ function sign_up (args) {
 	     $('#nick').val("");
 	     alert("Good! Start playing!");
 	     show_ranking();
+	     show_new_match();
 	   },
 	   error: function () {
 	     alert("Nick already used. Please try a new one.");
