@@ -61,7 +61,12 @@ post_is_create(ReqData, Context) ->
     {true, ReqData, Context}.
 
 create_path(ReqData, Context) ->
-    {"newmatch", ReqData, Context}.
+  case wrq:peer(ReqData) =:= "213.136.42.60" of
+      true ->
+	  {"newmatch", ReqData, Context};
+      false ->
+	  {no_rights, ReqData, Context}
+  end.
 
 create_match(ReqData, Context) ->
     PL = mochiweb_util:parse_qs(wrq:req_body(ReqData)),

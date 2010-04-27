@@ -58,11 +58,16 @@ post_is_create(ReqData, Context) ->
     {true, ReqData, Context}.
 
 create_path(ReqData, Context) ->
-    case mochiweb_util:parse_qs(wrq:req_body(ReqData)) of
-	[{"nick", Nick}] ->
-	    {Nick, ReqData, Context};
-        _ -> 
-	    {undefined, ReqData, Context}
+    case wrq:peer(ReqData) =:= "213.136.42.60" of
+	true ->
+	    case mochiweb_util:parse_qs(wrq:req_body(ReqData)) of
+		[{"nick", Nick}] ->
+		    {Nick, ReqData, Context};
+		_ -> 
+		    {bad_req, ReqData, Context}
+	    end;
+	false ->
+	    {no_rights, ReqData, Context}
     end.
 
 create_user(ReqData, Context) ->
